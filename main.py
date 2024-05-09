@@ -1,7 +1,9 @@
 from dijkstar import Graph, find_path
 import pandas as pd
 import stations
-
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.manifold import Isomap
 def find_stations(all_stations, stop, line):
     for i in range(len(all_stations)):
         if all_stations[i].name == stop and all_stations[i].line == line:
@@ -14,6 +16,14 @@ def find_stations_exact(all_stations, line, complex):
             return all_stations[i]
     print("FAIL")
     return None
+
+def find_stations_of_complex(all_stations, complex):
+    complex_stations = []
+    for i in range(len(all_stations)):
+        if all_stations[i].complex_id == complex:
+            complex_stations.append(all_stations[i])
+    return complex_stations
+
 
 
 def add_line(graph, stops, train_frequency, station_transit, all_stations ):
@@ -56,7 +66,7 @@ def cost_func(u, v, edge, prev_edge):
 
 
 # Press the green button in the gutter to run the script.
-if __name__ == '__main__':
+def get_graph():
     subwayStations = create_stations("Subway_stations.csv")
     graph = Graph()
     # 1 line
@@ -141,20 +151,53 @@ if __name__ == '__main__':
     C_times = [1,2,1,2,2,1,1,2,1,1,1,1,3,2,2,1,1,1,3,2,1,1,2,5,1,2,2,1,2,1,1,2,1,1,2,4,2,3,3]
     add_line(graph, C_stops, 7, C_times, subwayStations)
 
-    # D line
-
+    # D line - TIMES WITH BROOKLYN LOCAL - CHECK
+    D_stop_names = ["Norwood-205 St", "Bedford Park Blvd", "Kingsbridge Rd", "Fordham Rd", "182-183 Sts", "Tremont Av", "174-175 Sts", "170 St", "167 St", "161 St-Yankee Stadium", "155 St", "145 St", "125 St", "59 St-Columbus Circle", "7 Av", "47-50 Sts-Rockefeller Ctr", "42 St-Bryant Pk", "34 St-Herald Sq", "W 4 St-Wash Sq", "Broadway-Lafayette St", "Grand St", "Atlantic Av-Barclays Ctr", "36 St", "9 Av", "Fort Hamilton Pkwy", "50 St", "55 St", "62 St", "71 St", "79 St", "18 Av", "20 Av", "Bay Pkwy", "25 Av", "Bay 50 St", "Coney Island-Stillwell Av"]
+    D_stops = []
+    for i in D_stop_names:
+        D_stops.append(find_stations(subwayStations, i, "D"))
+    D_times = [2,2,2,2,2,1,1,1,2,4,2,3,8,2,2,1,1,3,2,2,13,9,3,2,3,2,3,2,2,2,2,2,3,4,4]
+    add_line(graph, D_stops, 20, D_times, subwayStations)
     # E line
-
+    E_stop_names = ["Jamaica Center-Parsons/Archer", "Sutphin Blvd-Archer Av-JFK Airport", "Jamaica-Van Wyck", "Briarwood", "Kew Gardens-Union Tpke", "75 Av", "Forest Hills-71 Av", "Jackson Hts-Roosevelt Av", "Queens Plaza", "Court Sq-23 St", "Lexington Av/53 St", "5 Av/53 St", "7 Av", "50 St", "42 St-Port Authority Bus Terminal", "34 St-Penn Station", "23 St", "14 St", "W 4 St-Wash Sq", "Spring St","Canal St", "World Trade Center" ]
+    E_stops = []
+    for i in E_stop_names:
+        E_stops.append(find_stations(subwayStations, i, "E"))
+    E_times = [1,2,2,2,1,1,7,6,1,4,1,2,3,2,1,1,1,3,2,1,1]
+    add_line(graph, E_stops, 6, E_times, subwayStations)
     # F line
+    F_stop_names = ["Jamaica-179 St", "169 St", "Parsons Blvd", "Sutphin Blvd", "Briarwood", "Kew Gardens-Union Tpke", "75 Av", "Forest Hills-71 Av", "Jackson Hts-Roosevelt Av", "21 St-Queensbridge", "Roosevelt Island", "Lexington Av/63 St", "57 St", "47-50 Sts-Rockefeller Ctr", "42 St-Bryant Pk", "34 St-Herald Sq", "23 St", "14 St", "W 4 St-Wash Sq", "Broadway-Lafayette St","2 Av", "Delancey St-Essex St", "East Broadway", "York St", "Jay St-MetroTech", "Bergen St", "Carroll St", "Smith-9 Sts", "4 Av-9 St", "7 Av", "15 St-Prospect Park", "Fort Hamilton Pkwy", "Church Av", "Ditmas Av", "18 Av", "Avenue I", "Bay Pkwy", "Avenue N", "Avenue P", "Kings Hwy", "Avenue U", "Avenue X", "Neptune Av", "W 8 St-NY Aquarium", "Coney Island-Stillwell Av"]
+    F_stops = []
+    for i in F_stop_names:
+        F_stops.append(find_stations(subwayStations, i, "F"))
+    F_times = [4,4,4,5,5,1,2,10,11,2,2,3,2,1,1,1,2,2,2,1,1,1,4,2,3,1,1,2,2,1,3,1,2,1,1,1,3,1,1,2,2,1,2,2]
+    add_line(graph, F_stops, 20, F_times, subwayStations)
 
-    # G line
+
+
     G_stop_names = ["Court Sq", "21 St", "Greenpoint Av", "Nassau Av", "Metropolitan Av", "Broadway", "Flushing Av", "Myrtle-Willoughby Avs", "Bedford-Nostrand Avs", "Classon Av", "Clinton-Washington Avs", "Fulton St", "Hoyt-Schermerhorn Sts", "Bergen St", "Carroll St", "Smith-9 Sts", "4 Av-9 St", "7 Av", "15 St-Prospect Park", "Fort Hamilton Pkwy", "Church Av"]
     G_stops = []
     for i in G_stop_names:
         G_stops.append(find_stations(subwayStations, i, "G"))
     G_times = [1,3,1,2,2,2,1,2,1,1,1,3,2,1,2,2,2,1,2,1]
     add_line(graph, G_stops, 20, G_times, subwayStations)
-    
+
+    #J LINE
+    J_stop_names = ["Broad St", "Fulton St", "Chambers St", "Canal St", "Bowery", "Delancey St-Essex St", "Marcy Av", "Hewes St", "Lorimer St", "Flushing Av", "Myrtle Av", "Kosciuszko St", "Gates Av", "Halsey St", "Chauncey St", "Broadway Junction", "Alabama Av", "Van Siclen Av", "Cleveland St", "Norwood Av", "Crescent St", "Cypress Hills", "75 St-Elderts Ln", "85 St-Forest Pkwy", "Woodhaven Blvd", "104 St", "111 St", "121 St", "Sutphin Blvd-Archer Av-JFK Airport", "Jamaica Center-Parsons/Archer"]
+    J_stops = []
+    for i in J_stop_names:
+        J_stops.append(find_stations(subwayStations, i, "J"))
+    J_times = [2,1,3,2,8,1,1,1,2,1,2,1,1,2,1,2,1,1,1,2,2,2,2,3,3,4,2]
+    add_line(graph, J_stops, 8, J_times, subwayStations)
+
+    #L line
+    L_stop_names = ["8 Av", "6 Av", "14 St-Union Sq", "3 Av", "1 Av", "Bedford Av", "Lorimer St", "Graham Av", "Grand St", "Montrose Av", "Morgan Av", "Jefferson St", "DeKalb Av", "Myrtle-Wyckoff Avs", "Halsey St", "Wilson Av", "Bushwick Av-Aberdeen St", "Broadway Junction", "Atlantic Av", "Sutter Av", "Livonia Av", "New Lots Av", "East 105 St", "Canarsie-Rockaway Pkwy"]
+    L_stops = []
+    for i in L_stop_names:
+        L_stops.append(find_stations(subwayStations, i, "L"))
+    L_times = [2,1,1,1,4,2,1,1,1,1,3,1,2,2,2,1,2,2,2,1,2,1,2]
+
+
     # Q line DAY ROUTE
     Q_stop_names = ["Coney Island-Stillwell Av", "W 8 St-NY Aquarium", "Ocean Pkwy", "Brighton Beach", "Sheepshead Bay", "Neck Rd", "Avenue U", "Kings Hwy", "Avenue M", "Avenue J", "Avenue H", "Newkirk Plaza", "Cortelyou Rd", "Beverley Rd", "Church Av", "Parkside Av", "Prospect Park", "7 Av", "Atlantic Av-Barclays Ctr", "DeKalb Av", "Canal St", "14 St-Union Sq", "34 St-Herald Sq", "Times Sq-42 St", "57 St-7 Av", "Lexington Av/63 St", "72 St", "86 St", "96 St"]
     Q_stops = []
@@ -171,7 +214,36 @@ if __name__ == '__main__':
     R_times = [2,2,2,2,1,2,2,3,2,2,1,2,3,8,3,1,3,1,2,3,1,1,1,1,2,2,2,3,7,2,2,1,2,2,2,3,3,3,3]
     add_line(graph, R_stops, 7, R_times, subwayStations)
 
+    return graph, subwayStations
 
-    print(find_path(graph, find_stations_exact(subwayStations, "O", 451), find_stations_exact(subwayStations, "O", 362), cost_func = cost_func))
 
+
+if __name__ == '__main__':
+    color = {}
+    color['A'] = 'b'
+    color['F'] = 'orange'
+    color['C'] = 'b'
+    color['O'] = 'k'
+    color['1'] = 'r'
+    color['6'] = 'g'
+    graph, substations = get_graph()
+    locs = [186,187,189,232,234,305,306,307,308,360,361,362]
+    included_stations = []
+    for i in locs:
+        included_stations.extend(find_stations_of_complex(substations,i))
+    distances = np.zeros((len(included_stations), len(included_stations)))
+    for i in range(len(included_stations)):
+        for j in range(len(included_stations)):
+            distances[i][j] = find_path(graph, included_stations[i], included_stations[j], cost_func=cost_func).total_cost
+    isomap = Isomap(n_neighbors=10, n_components=2)
+    X_iso = isomap.fit_transform(distances)
+    # Plotting the result
+    plt.figure(figsize=(8, 6))
+    for i in range(len(included_stations)):
+        plt.scatter(X_iso[i, 0], X_iso[i, 1], c=color[included_stations[i].line], label=f'{included_stations[i].__str__()}')
+        plt.text(X_iso[i, 0], X_iso[i, 1], f'{included_stations[i].__str__()}', fontsize=4, ha='right', va='bottom')
+    plt.title('Isomap Subway Map')
+    plt.show()
+    print(find_path(graph, find_stations_exact(substations, "O", 451), find_stations_exact(substations, "O", 362),
+                    cost_func=cost_func))
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/

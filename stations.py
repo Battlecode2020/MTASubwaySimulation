@@ -3,7 +3,5 @@ class Station:
         self.name = name
         self.line = line
         self.complex_id = complex_id
-    '''
     def __str__(self):
-        return self.name + self.line
-    '''
+        return self.name + " " + self.line
