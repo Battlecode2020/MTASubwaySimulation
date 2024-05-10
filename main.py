@@ -200,8 +200,18 @@ def get_graph():
 
     #M LINE
     M_stop_names = ["Forest Hills-71 Av", "67 Av", "63 Dr-Rego Park", "Woodhaven Blvd", "Grand Av-Newtown", "Elmhurst Av", "Jackson Hts-Roosevelt Av", "65 St", "Northern Blvd", "46 St", "Steinway St", "36 St", "Queens Plaza", "Court Sq-23 St", "Lexington Av/53 St", "5 Av/53 St", "47-50 Sts-Rockefeller Ctr", "42 St-Bryant Pk", "34 St-Herald Sq", "23 St", "14 St", "W 4 St-Wash Sq", "Broadway-Lafayette St", "Delancey St-Essex St", "Marcy Av", "Hewes St", "Lorimer St", "Flushing Av", "Myrtle Av", "Central Av", "Knickerbocker Av", "Myrtle-Wyckoff Avs", "Seneca Av", "Forest Av", "Fresh Pond Rd", "Middle Village-Metropolitan Av"]
+    M_stops = []
+    for i in M_stop_names:
+        M_stops.append(find_stations(subwayStations, i, "M"))
+    M_times = [2,2,2,1,2,1,2,2,1,1,2,3,1,3,2,2,2,1,2,1,2,2,3,8,1,1,1,2,3,2,1,2,2,1,2]
+    add_line(graph, M_stops, 10, M_times, subwayStations)
 
-    M_times = []
+    #N LINE TODO
+    N_stop_names = ["Astoria-Ditmars Blvd", "Astoria Blvd", "30 Av", "Broadway", "36 Av", "39 Av-Dutch Kills", "Queensboro Plaza", "Lexington Av/59 St", "5 Av/59 St", "57 St-7 Av", "49 St", "Times Sq-42 St", "34 St-Herald Sq", "Canal St", "Atlantic Av-Barclays Ctr", "36 St", "59 St", "8 Av", "Fort Hamilton Pkwy", "New Utrecht Av", "18 Av", "20 Av", "Bay Pkwy", "Kings Hwy", "Avenue U", "86 St", "Coney Island-Stillwell Av"]
+    N_stops = []
+    for i in N_stop_names:
+
+    N_times = []
 
     # Q line DAY ROUTE
     Q_stop_names = ["Coney Island-Stillwell Av", "W 8 St-NY Aquarium", "Ocean Pkwy", "Brighton Beach", "Sheepshead Bay", "Neck Rd", "Avenue U", "Kings Hwy", "Avenue M", "Avenue J", "Avenue H", "Newkirk Plaza", "Cortelyou Rd", "Beverley Rd", "Church Av", "Parkside Av", "Prospect Park", "7 Av", "Atlantic Av-Barclays Ctr", "DeKalb Av", "Canal St", "14 St-Union Sq", "34 St-Herald Sq", "Times Sq-42 St", "57 St-7 Av", "Lexington Av/63 St", "72 St", "86 St", "96 St"]
@@ -211,6 +221,14 @@ def get_graph():
     Q_times = [2,2,1,1,1,2,3,2,2,2,1,1,1,1,2,2,3,3,2,8,4,3,2,2,3,2,2,2]
     add_line(graph, Q_stops, 8, Q_times, subwayStations)
 
+    #S line
+    S_stop_names = ["Times Sq-42 St", "Grand Central-42 St"]
+    S_stops = []
+    for i in S_stop_names:
+        S_stops.append(find_stations(subwayStations, i, "S"))
+    S_times = [2]
+    add_line(graph, S_stops, 4, S_times, subwayStations)
+
     # R line
     R_stop_names = ["Bay Ridge-95 St", "86 St", "77 St", "Bay Ridge Av", "59 St", "53 St", "45 St", "36 St", "25 St", "Prospect Av", "4 Av-9 St", "Union St", "Atlantic Av-Barclays Ctr", "DeKalb Av", "Jay St-MetroTech", "Court St", "Whitehall St-South Ferry", "Rector St", "Cortlandt St", "City Hall", "Canal St", "Prince St", "8 St-NYU", "14 St-Union Sq", "23 St", "28 St","34 St-Herald Sq","Times Sq-42 St", "49 St", "57 St-7 Av", "5 Av/59 St", "Lexington Av/59 St", "Queens Plaza", "36 St", "Steinway St", "46 St", "Northern Blvd", "65 St", "Jackson Hts-Roosevelt Av", "Elmhurst Av", "Grand Av-Newtown", "Woodhaven Blvd", "63 Dr-Rego Park", "67 Av", "Forest Hills-71 Av"]
     R_stops = []
@@ -219,6 +237,7 @@ def get_graph():
     R_times = [2,2,2,2,1,2,2,3,2,2,1,2,3,8,3,1,3,1,2,3,1,1,1,1,2,2,2,3,7,2,2,1,2,2,2,3,3,3,3]
     add_line(graph, R_stops, 7, R_times, subwayStations)
 
+    #W line TODO
     return graph, subwayStations
 
 
