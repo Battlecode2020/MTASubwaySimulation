@@ -1,6 +1,7 @@
 from dijkstar import Graph, find_path
 import pandas as pd
 import stations
+import simulation
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.manifold import Isomap
@@ -14,7 +15,7 @@ def find_stations_exact(all_stations, line, complex):
     for i in range(len(all_stations)):
         if all_stations[i].line == line and all_stations[i].complex_id == complex:
             return all_stations[i]
-    print("FAIL")
+    print("FAIL {} {}".format(line, complex))
     return None
 
 def find_stations_of_complex(all_stations, complex):
@@ -67,7 +68,7 @@ def cost_func(u, v, edge, prev_edge):
     return length
 
 def get_complexes(filename="Subway_stations.csv"):
-    banned = [627,141,626,193,194,195,196,197,198,199,200,201,202,203,204,205,206,207,208,209,444,445,501,502,503,504,505,506,507,508,509,510,511,512,513,514,515,516,517,518,519,522,523,]
+    banned = [627,141,626,193,194,195,196,197,198,199,200,201,202,203,204,205,206,207,208,209,444,445,501,502,503,504,505,506,507,508,509,510,511,512,513,514,515,516,517,518,519,522,523]
     #think about gun hill rd and pelham pkwy
 
     df = pd.read_csv(filename)
@@ -264,8 +265,14 @@ def get_graph():
 
     return graph, subwayStations
 
-
-
+def total_time(graph, all_stations, movement_matrix):
+    banned = [627, 141, 626, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 444,445, 501, 502, 503, 504, 505, 506, 507, 508, 509, 510, 511, 512, 513, 514, 515, 516, 517, 518, 519, 522,523]
+    total = 0
+    for i in range(len(movement_matrix)):
+        for j in range(len(movement_matrix[i])):
+            if i not in banned and j not in banned and movement_matrix[i][j] != 0:
+                total += movement_matrix[i][j] * find_path(graph, find_stations_exact(all_stations, "O", i), find_stations_exact(all_stations, "O", i)).total_cost
+    return total
 if __name__ == '__main__':
     color = {}
     color['A'] = 'b'
@@ -293,7 +300,7 @@ if __name__ == '__main__':
     color['7'] = 'purple'
 
     graph, substations = get_graph()
-
+    print(total_time(graph, substations, simulation.movement("10/16/2023 04:00:00 PM")))
     locs = get_complexes()
     included_stations = []
     '''

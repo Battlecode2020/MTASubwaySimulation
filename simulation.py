@@ -86,18 +86,16 @@ for key, value in dict.items():
 print(max)
 print(max_key)
 '''
-def edge_magnitude(edge, movement_matrix):
-    for i in ...
-def total_time(mat, movement_matrix):
-    for j in ...
 
+
+'''
 curr_time = "10/16/2023 04:00:00 PM"
 all_movement_matrix = []
 for i in range(168):
     curr_time = nextTime(curr_time)
     all_movement_matrix.append(movement(curr_time))
 
-
+'''
 
 
 '''
