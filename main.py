@@ -196,7 +196,12 @@ def get_graph():
     for i in L_stop_names:
         L_stops.append(find_stations(subwayStations, i, "L"))
     L_times = [2,1,1,1,4,2,1,1,1,1,3,1,2,2,2,1,2,2,2,1,2,1,2]
+    add_line(graph, L_stops, 5, L_times, subwayStations)
 
+    #M LINE
+    M_stop_names = ["Forest Hills-71 Av", "67 Av", "63 Dr-Rego Park", "Woodhaven Blvd", "Grand Av-Newtown", "Elmhurst Av", "Jackson Hts-Roosevelt Av", "65 St", "Northern Blvd", "46 St", "Steinway St", "36 St", "Queens Plaza", "Court Sq-23 St", "Lexington Av/53 St", "5 Av/53 St", "47-50 Sts-Rockefeller Ctr", "42 St-Bryant Pk", "34 St-Herald Sq", "23 St", "14 St", "W 4 St-Wash Sq", "Broadway-Lafayette St", "Delancey St-Essex St", "Marcy Av", "Hewes St", "Lorimer St", "Flushing Av", "Myrtle Av", "Central Av", "Knickerbocker Av", "Myrtle-Wyckoff Avs", "Seneca Av", "Forest Av", "Fresh Pond Rd", "Middle Village-Metropolitan Av"]
+
+    M_times = []
 
     # Q line DAY ROUTE
     Q_stop_names = ["Coney Island-Stillwell Av", "W 8 St-NY Aquarium", "Ocean Pkwy", "Brighton Beach", "Sheepshead Bay", "Neck Rd", "Avenue U", "Kings Hwy", "Avenue M", "Avenue J", "Avenue H", "Newkirk Plaza", "Cortelyou Rd", "Beverley Rd", "Church Av", "Parkside Av", "Prospect Park", "7 Av", "Atlantic Av-Barclays Ctr", "DeKalb Av", "Canal St", "14 St-Union Sq", "34 St-Herald Sq", "Times Sq-42 St", "57 St-7 Av", "Lexington Av/63 St", "72 St", "86 St", "96 St"]
@@ -226,8 +231,10 @@ if __name__ == '__main__':
     color['O'] = 'k'
     color['1'] = 'r'
     color['6'] = 'g'
+    color['2'] = 'r'
+    color['3'] = 'r'
     graph, substations = get_graph()
-    locs = [186,187,189,232,234,305,306,307,308,360,361,362]
+    locs = [186,187,189,232,234,305,306,307,308,360,361,362,310,313]
     included_stations = []
     for i in locs:
         included_stations.extend(find_stations_of_complex(substations,i))
