@@ -35,6 +35,8 @@ def add_line(graph, stops, train_frequency, station_transit, all_stations ):
     :param station_transit: time to get from one stop to the next. An array station_transit[0] = time from stops[0] to stops[1]
     :return:
     '''
+    if len(stops) - len(station_transit) != 1:
+        raise Exception
     for i in range(len(station_transit)):
         graph.add_edge(stops[i], stops[i+1], (station_transit[i], stops[i].name + "-" + stops[i+1].name))
         graph.add_edge(stops[i+1], stops[i], (station_transit[i], stops[i+1].name + "-" + stops[i].name))
@@ -64,8 +66,19 @@ def cost_func(u, v, edge, prev_edge):
     length, name = edge
     return length
 
+def get_complexes(filename="Subway_stations.csv"):
+    banned = [627,141,626,193,194,195,196,197,198,199,200,201,202,203,204,205,206,207,208,209,444,445,501,502,503,504,505,506,507,508,509,510,511,512,513,514,515,516,517,518,519,522,523,]
+    #think about gun hill rd and pelham pkwy
 
-# Press the green button in the gutter to run the script.
+    df = pd.read_csv(filename)
+    complex_IDs = []
+    for index, row in df.iterrows():
+        lines = row['Daytime Routes'].split()
+
+        if (row['Complex ID'] not in banned) and (row['Complex ID'] not in complex_IDs):
+            complex_IDs.append(row['Complex ID'])
+    return complex_IDs
+
 def get_graph():
     subwayStations = create_stations("Subway_stations.csv")
     graph = Graph()
@@ -124,7 +137,7 @@ def get_graph():
     seven_stops = []
     for i in seven_stop_names:
         seven_stops.append(find_stations(subwayStations, i, "7"))
-    seven_times = [3,3,4,1,2,2,2,1,2,1,1,2,2,1,1,1,1,1,2,2]
+    seven_times = [3,2,1,4,1,2,2,2,1,2,1,1,2,2,1,1,1,1,1,2,2]
     add_line(graph, seven_stops, 15, seven_times, subwayStations)
 
     # A line
@@ -132,7 +145,7 @@ def get_graph():
     A_stops = []
     for i in A_stop_names:
         A_stops.append(find_stations(subwayStations, i, "A"))
-    A_times = [2,2,1,2,2,4,3,8,2,3,5,3,1,2,4,1,1,6,2,3,5,2,2,2,1]
+    A_times = [3,2,2,3,3,5,3,7,5,1,2,4,2,1,2,4,1,2,5,2,4,4,2,2,1,1 ]
     add_line(graph, A_stops, 5, A_times, subwayStations)
 
     # B line
@@ -140,7 +153,7 @@ def get_graph():
     B_stops = []
     for i in B_stop_names:
         B_stops.append(find_stations(subwayStations, i, "B"))
-    B_times = [2,2,2,1,1,1,1,2,4,2,3,2,1,1,2,1,1,1,1,3,2,2,1,1,3,2,2,8,2,2,3,3,3,4,6]
+    B_times = [2,2,2,1,1,1,1,2,4,2,3,2,1,1,2,2,1,1,1,3,2,2,2,1,3,2,2,8,2,2,3,3,2,5,4,2]
     add_line(graph, B_stops, 7, B_times, subwayStations)
 
     # C line
@@ -174,7 +187,7 @@ def get_graph():
     add_line(graph, F_stops, 20, F_times, subwayStations)
 
 
-
+    # G LINE
     G_stop_names = ["Court Sq", "21 St", "Greenpoint Av", "Nassau Av", "Metropolitan Av", "Broadway", "Flushing Av", "Myrtle-Willoughby Avs", "Bedford-Nostrand Avs", "Classon Av", "Clinton-Washington Avs", "Fulton St", "Hoyt-Schermerhorn Sts", "Bergen St", "Carroll St", "Smith-9 Sts", "4 Av-9 St", "7 Av", "15 St-Prospect Park", "Fort Hamilton Pkwy", "Church Av"]
     G_stops = []
     for i in G_stop_names:
@@ -187,7 +200,7 @@ def get_graph():
     J_stops = []
     for i in J_stop_names:
         J_stops.append(find_stations(subwayStations, i, "J"))
-    J_times = [2,1,3,2,8,1,1,1,2,1,2,1,1,2,1,2,1,1,1,2,2,2,2,3,3,4,2]
+    J_times = [2,1,1,2,2,8,1,2,1,2,1,2,1,1,2,2,2,1,1,1,2,1,2,2,3,2,1,4,1]
     add_line(graph, J_stops, 8, J_times, subwayStations)
 
     #L line
@@ -206,12 +219,13 @@ def get_graph():
     M_times = [2,2,2,1,2,1,2,2,1,1,2,3,1,3,2,2,2,1,2,1,2,2,3,8,1,1,1,2,3,2,1,2,2,1,2]
     add_line(graph, M_stops, 10, M_times, subwayStations)
 
-    #N LINE TODO
-    N_stop_names = ["Astoria-Ditmars Blvd", "Astoria Blvd", "30 Av", "Broadway", "36 Av", "39 Av-Dutch Kills", "Queensboro Plaza", "Lexington Av/59 St", "5 Av/59 St", "57 St-7 Av", "49 St", "Times Sq-42 St", "34 St-Herald Sq", "Canal St", "Atlantic Av-Barclays Ctr", "36 St", "59 St", "8 Av", "Fort Hamilton Pkwy", "New Utrecht Av", "18 Av", "20 Av", "Bay Pkwy", "Kings Hwy", "Avenue U", "86 St", "Coney Island-Stillwell Av"]
+    #N LINE
+    N_stop_names = ["Astoria-Ditmars Blvd", "Astoria Blvd", "30 Av", "Broadway", "36 Av", "39 Av-Dutch Kills", "Queensboro Plaza", "Lexington Av/59 St", "5 Av/59 St", "57 St-7 Av", "49 St", "Times Sq-42 St", "34 St-Herald Sq", "14 St-Union Sq", "Canal St", "Atlantic Av-Barclays Ctr", "36 St", "59 St", "8 Av", "Fort Hamilton Pkwy", "New Utrecht Av", "18 Av", "20 Av", "Bay Pkwy", "Kings Hwy", "Avenue U", "86 St", "Coney Island-Stillwell Av"]
     N_stops = []
     for i in N_stop_names:
-
-    N_times = []
+        N_stops.append(find_stations(subwayStations, i, "N"))
+    N_times = [2,2,2,1,2,1,5,1,3,2,2,2,3,5,12,8,4,2,2,2,3,1,1,1,3,1,4]
+    add_line(graph, N_stops, 10, N_times, subwayStations)
 
     # Q line DAY ROUTE
     Q_stop_names = ["Coney Island-Stillwell Av", "W 8 St-NY Aquarium", "Ocean Pkwy", "Brighton Beach", "Sheepshead Bay", "Neck Rd", "Avenue U", "Kings Hwy", "Avenue M", "Avenue J", "Avenue H", "Newkirk Plaza", "Cortelyou Rd", "Beverley Rd", "Church Av", "Parkside Av", "Prospect Park", "7 Av", "Atlantic Av-Barclays Ctr", "DeKalb Av", "Canal St", "14 St-Union Sq", "34 St-Herald Sq", "Times Sq-42 St", "57 St-7 Av", "Lexington Av/63 St", "72 St", "86 St", "96 St"]
@@ -234,10 +248,20 @@ def get_graph():
     R_stops = []
     for i in R_stop_names:
         R_stops.append(find_stations(subwayStations, i, "R"))
-    R_times = [2,2,2,2,1,2,2,3,2,2,1,2,3,8,3,1,3,1,2,3,1,1,1,1,2,2,2,3,7,2,2,1,2,2,2,3,3,3,3]
+    R_times = [1,2,1,3,2,2,2,2,2,2,1,2,3,1,1,5,2,1,2,2,1,2,1,2,1,1,2,1,2,2,1,6,2,2,1,2,2,2,1,2,1,2,2,2]
     add_line(graph, R_stops, 7, R_times, subwayStations)
 
-    #W line TODO
+    #W line
+    W_stop_names = ["Astoria-Ditmars Blvd", "Astoria Blvd", "30 Av", "Broadway", "36 Av", "39 Av-Dutch Kills", "Queensboro Plaza", "Lexington Av/59 St", "5 Av/59 St", "57 St-7 Av", "49 St", "Times Sq-42 St", "34 St-Herald Sq", "28 St","23 St","14 St-Union Sq", "8 St-NYU", "Prince St", "Canal St", "City Hall", "Cortlandt St", "Rector St", "Whitehall St-South Ferry" ]
+    W_stops = []
+    for i in W_stop_names:
+        W_stops.append(find_stations(subwayStations, i, "W"))
+    W_times = [2, 2, 2, 1, 2, 1, 5, 1, 3, 2, 2, 2,1,1,2,1,3,2,2,2,1,2]
+    add_line(graph, W_stops, 6, W_times, subwayStations)
+
+    #Z line
+    Z_stop_names = []
+
     return graph, subwayStations
 
 
@@ -245,22 +269,45 @@ def get_graph():
 if __name__ == '__main__':
     color = {}
     color['A'] = 'b'
-    color['F'] = 'orange'
+    color['B'] = 'orange'
     color['C'] = 'b'
+    color['D'] = 'orange'
+    color['E'] = 'b'
+    color['F'] = 'orange'
+    color['G'] = 'g'
+    color['J'] = 'brown'
+    color['M'] = 'orange'
+    color['N'] = 'yellow'
+    color['Q'] = 'yellow'
+    color['R'] = 'yellow'
+    color['S'] = 'gray'
+    color['W'] = 'yellow'
+    color['Z'] = 'brown'
     color['O'] = 'k'
     color['1'] = 'r'
     color['6'] = 'g'
     color['2'] = 'r'
     color['3'] = 'r'
+    color['4'] = 'g'
+    color['5'] = 'g'
+    color['7'] = 'purple'
+
     graph, substations = get_graph()
-    locs = [186,187,189,232,234,305,306,307,308,360,361,362,310,313]
+
+    locs = get_complexes()
     included_stations = []
+    '''
     for i in locs:
         included_stations.extend(find_stations_of_complex(substations,i))
+    '''
+    for i in locs:
+        included_stations.append(find_stations_exact(substations, "O", i))
     distances = np.zeros((len(included_stations), len(included_stations)))
     for i in range(len(included_stations)):
         for j in range(len(included_stations)):
             distances[i][j] = find_path(graph, included_stations[i], included_stations[j], cost_func=cost_func).total_cost
+            print("{} {}".format(i, j))
+
     isomap = Isomap(n_neighbors=10, n_components=2)
     X_iso = isomap.fit_transform(distances)
     # Plotting the result
