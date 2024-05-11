@@ -25,6 +25,11 @@ def find_stations_of_complex(all_stations, complex):
             complex_stations.append(all_stations[i])
     return complex_stations
 
+def find_closest_station(graph, substations, station):
+    closest = None
+    min = 200
+    for i in substations:
+        if find_path(graph, i, station, cost_func=cost_func)
 
 
 def add_line(graph, stops, train_frequency, station_transit, all_stations ):
@@ -81,10 +86,10 @@ def get_complexes(filename="Subway_stations.csv"):
     return complex_IDs
 
 def get_graph():
-    '''
+
     # 1 PM
     line_freqs = {'1': 6, '2': 8, '3': 8, '4': 8, '5': 8, '6': 4, '7': 5, 'A': 8, 'B': 10, 'C': 8, 'D': 10, 'E': 8, 'F': 7, 'G': 8, 'J': 10, 'L': 5, 'M': 10, 'N': 9, 'Q': 9, 'S': 5, 'R': 8, 'W': 10}
-
+    '''
     #4 PM
     line_freqs = {'1': 5, '2': 6, '3': 7, '4': 6, '5': 4, '6': 4, '7': 3, 'A': 6, 'B': 10, 'C': 10, 'D': 6, 'E': 5, 'F': 5, 'G': 8, 'J': 9, 'L': 4, 'M': 7, 'N': 12, 'Q': 8, 'S': 5, 'R': 7, 'W': 10}
 
@@ -93,12 +98,13 @@ def get_graph():
 
     #10 PM
     line_freqs = {'1': 5, '2': 10, '3': 15, '4': 10, '5': 18, '6': 7, '7': 5, 'A': 10, 'B': 60, 'C': 11, 'D': 12, 'E': 10, 'F': 10, 'G': 12, 'J': 10, 'L': 6, 'M': 10, 'N': 10, 'Q': 10, 'S': 5, 'R': 12, 'W': 10}
-    '''
+
     #2 AM
     line_freqs = {'1': 20, '2': 20, '3': 20, '4': 20, '5': 20, '6': 20, '7': 20, 'A': 20, 'B': 60, 'C': 60, 'D': 20, 'E': 20,  'F': 20, 'G': 20, 'J': 20, 'L': 20, 'M': 20, 'N': 20, 'Q': 20, 'S': 60, 'R': 20, 'W': 60}
-    '''
+    
     #10 AM
     line_freqs = {'1': 5, '2': 8, '3': 8, '4': 7, '5': 8, '6': 4, '7': 5, 'A': 5, 'B': 10, 'C': 10, 'D': 10, 'E': 6, 'F': 6, 'G': 7, 'J': 10, 'L': 4, 'M': 10, 'N': 9, 'Q': 8, 'S': 4, 'R': 8, 'W': 10}
+    
     #7 AM
     line_freqs = {'1': 8, '2': 6, '3': 6, '4': 5, '5': 4, '6': 4, '7': 2, 'A': 4, 'B': 6, 'C': 10, 'D': 10, 'E': 6, 'F': 4, 'G': 7, 'J': 10, 'L': 4, 'M': 9, 'N': 10, 'Q': 7, 'S': 5, 'R': 8, 'W': 9}
     '''
@@ -321,10 +327,12 @@ if __name__ == '__main__':
     color['7'] = 'purple'
 
     graph, substations = get_graph()
-    current_time = "10/17/2023 05:00:00 AM"
-    for i in range(4):
+    '''
+    current_time = "10/17/2023 01:00:00 PM"
+    for i in range(3):
         print("{}: {}".format(current_time, total_time(graph, substations, simulation.movement(current_time))))
         current_time = simulation.nextTime(current_time)
+    '''
     locs = get_complexes()
     included_stations = []
     '''
@@ -344,7 +352,7 @@ if __name__ == '__main__':
     # Plotting the result
     plt.figure(figsize=(8, 6))
     for i in range(len(included_stations)):
-        plt.scatter(X_iso[i, 0], X_iso[i, 1], c=color[included_stations[i].line], label=f'{included_stations[i].__str__()}')
+        plt.scatter(X_iso[i, 0], X_iso[i, 1], c=color[find_closest_station(graph, substations, included_stations[i])], label=f'{included_stations[i].__str__()}')
         plt.text(X_iso[i, 0], X_iso[i, 1], f'{included_stations[i].__str__()}', fontsize=4, ha='right', va='bottom')
     plt.title('Isomap Subway Map')
     plt.show()
