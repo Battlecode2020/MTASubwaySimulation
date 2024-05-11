@@ -81,29 +81,25 @@ def get_complexes(filename="Subway_stations.csv"):
     return complex_IDs
 
 def get_graph():
-    line_freqs = {}
-    line_freqs['1'] = 20
-    line_freqs['2'] = 8
-    line_freqs['3'] = 8
-    line_freqs['4'] = 8
-    line_freqs['5'] = 8
-    line_freqs['6'] = 8
-    line_freqs['7'] = 15
-    line_freqs['A'] = 5
-    line_freqs['B'] = 7
-    line_freqs['C'] = 7
-    line_freqs['D'] = 20
-    line_freqs['E'] = 6
-    line_freqs['F']
-    line_freqs['G']
-    line_freqs['H']
-    line_freqs['M']
-    line_freqs['N']
-    line_freqs['Q']
-    line_freqs['R']
-    line_freqs['S']
-    line_freqs['W']
-
+    # 1 PM
+    line_freqs = {'1': 6, '2': 8, '3': 8, '4': 8, '5': 8, '6': 4, '7': 5, 'A': 8, 'B': 10, 'C': 8, 'D': 10, 'E': 8, 'F': 7, 'G': 8, 'J': 10, 'L': 5, 'M': 10, 'N': 9, 'Q': 9, 'S': 5, 'R': 8, 'W': 10}
+    #4 PM
+    line_freqs = {'1': 5, '2': 6, '3': 7, '4': 6, '5': 4, '6': 4, '7': 3, 'A': 6, 'B': 10, 'C': 8, 'D': 10, 'E': 8,'F': 7, 'G': 8, 'J': 10, 'L': 5, 'M': 10, 'N': 9, 'Q': 9, 'S': 5, 'R': 8, 'W': 10}
+    #7 PM
+    line_freqs = {'1': 4, '2': 6, '3': 7, '4': 6, '5': 9, '6': 4, '7': 3, 'A': 8, 'B': 10, 'C': 8, 'D': 10, 'E': 8,
+                  'F': 7, 'G': 8, 'J': 10, 'L': 5, 'M': 10, 'N': 9, 'Q': 9, 'S': 5, 'R': 8, 'W': 10}
+    #10 PM
+    line_freqs = {'1': 5, '2': 10, '3': 15, '4': 10, '5': 18, '6': 7, '7': 5, 'A': 10, 'B': 10, 'C': 8, 'D': 10, 'E': 8,
+                  'F': 7, 'G': 8, 'J': 10, 'L': 5, 'M': 10, 'N': 9, 'Q': 9, 'S': 5, 'R': 8, 'W': 10}
+    #2 AM
+    line_freqs = {'1': 20, '2': 20, '3': 20, '4': 20, '5': 20, '6': 20, '7': 20, 'A': 20, 'B': 10, 'C': 8, 'D': 10, 'E': 8,
+                  'F': 7, 'G': 8, 'J': 10, 'L': 5, 'M': 10, 'N': 9, 'Q': 9, 'S': 5, 'R': 8, 'W': 10}
+    #10 AM
+    line_freqs = {'1': 5, '2': 8, '3': 8, '4': 7, '5': 8, '6': 4, '7': 5, 'A': 5, 'B': 10, 'C': 8, 'D': 10, 'E': 8,
+                  'F': 7, 'G': 8, 'J': 10, 'L': 5, 'M': 10, 'N': 9, 'Q': 9, 'S': 5, 'R': 8, 'W': 10}
+    #7 AM
+    line_freqs = {'1': 8, '2': 6, '3': 6, '4': 5, '5': 4, '6': 4, '7': 2, 'A': 4, 'B': 10, 'C': 8, 'D': 10, 'E': 8,
+                  'F': 7, 'G': 8, 'J': 10, 'L': 5, 'M': 10, 'N': 9, 'Q': 9, 'S': 5, 'R': 8, 'W': 10}
     subwayStations = create_stations("Subway_stations.csv")
     graph = Graph()
     # 1 line
