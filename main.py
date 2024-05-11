@@ -81,6 +81,29 @@ def get_complexes(filename="Subway_stations.csv"):
     return complex_IDs
 
 def get_graph():
+    line_freqs = {}
+    line_freqs['1'] = 20
+    line_freqs['2'] = 8
+    line_freqs['3'] = 8
+    line_freqs['4'] = 8
+    line_freqs['5'] = 8
+    line_freqs['6'] = 8
+    line_freqs['7'] = 15
+    line_freqs['A'] = 5
+    line_freqs['B'] = 7
+    line_freqs['C'] = 7
+    line_freqs['D'] = 20
+    line_freqs['E'] = 6
+    line_freqs['F']
+    line_freqs['G']
+    line_freqs['H']
+    line_freqs['M']
+    line_freqs['N']
+    line_freqs['Q']
+    line_freqs['R']
+    line_freqs['S']
+    line_freqs['W']
+
     subwayStations = create_stations("Subway_stations.csv")
     graph = Graph()
     # 1 line
@@ -271,7 +294,7 @@ def total_time(graph, all_stations, movement_matrix):
     for i in range(len(movement_matrix)):
         for j in range(len(movement_matrix[i])):
             if i not in banned and j not in banned and movement_matrix[i][j] != 0:
-                total += movement_matrix[i][j] * find_path(graph, find_stations_exact(all_stations, "O", i), find_stations_exact(all_stations, "O", i)).total_cost
+                total += movement_matrix[i][j] * find_path(graph, find_stations_exact(all_stations, "O", i), find_stations_exact(all_stations, "O", j), cost_func=cost_func).total_cost
     return total
 if __name__ == '__main__':
     color = {}
@@ -300,7 +323,10 @@ if __name__ == '__main__':
     color['7'] = 'purple'
 
     graph, substations = get_graph()
-    print(total_time(graph, substations, simulation.movement("10/16/2023 04:00:00 PM")))
+    current_time = "10/16/2023 04:00:00 PM"
+    for i in range(10):
+        print("{}: {}".format(current_time, total_time(graph, substations, simulation.movement(current_time))))
+        current_time = simulation.nextTime(current_time)
     locs = get_complexes()
     included_stations = []
     '''
