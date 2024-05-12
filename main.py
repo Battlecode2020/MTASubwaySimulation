@@ -315,6 +315,9 @@ def total_time(graph, all_stations, movement_matrix):
             if i not in banned and j not in banned and movement_matrix[i][j] != 0:
                 total += movement_matrix[i][j] * find_path(graph, find_stations_exact(all_stations, "O", i), find_stations_exact(all_stations, "O", j), cost_func=cost_func).total_cost
     return total
+
+def cluster():
+
 if __name__ == '__main__':
     color = {}
     color['A'] = 'b'
@@ -379,8 +382,9 @@ if __name__ == '__main__':
         plt.text(X_iso[i, 0], X_iso[i, 1], f'{included_stations[i].__str__()}', fontsize=4, ha='right', va='bottom')
     '''
     for i in range(len(included_stations)):
-        plt.scatter(X_iso[i, 0], X_iso[i, 1], c=color[get_burough(included_stations[i].complex_id)], label=f'{included_stations[i].__str__()}')
-        plt.text(X_iso[i, 0], X_iso[i, 1], f'{included_stations[i].__str__()}', fontsize=4, ha='right', va='bottom')
+        if get_burough(included_stations[i].complex_id) == "BQ":
+            plt.scatter(X_iso[i, 0], X_iso[i, 1], c=color[get_burough(included_stations[i].complex_id)], label=f'{included_stations[i].__str__()}')
+            plt.text(X_iso[i, 0], X_iso[i, 1], f'{included_stations[i].__str__()}', fontsize=4, ha='right', va='bottom')
     plt.title('Isomap Subway Map')
     print("SHOW")
     plt.show()
@@ -392,8 +396,9 @@ if __name__ == '__main__':
     X_iso = isomap2.fit_transform(distances)
     plt.figure(figsize=(8, 6))
     for i in range(len(included_stations)):
-        plt.scatter(X_iso[i, 0], X_iso[i, 1], c=color[get_burough(included_stations[i].complex_id)], label=f'{included_stations[i].__str__()}')
-        plt.text(X_iso[i, 0], X_iso[i, 1], f'{included_stations[i].__str__()}', fontsize=4, ha='right', va='bottom')
+        if get_burough(included_stations[i].complex_id) == "BQ":
+            plt.scatter(X_iso[i, 0], X_iso[i, 1], c=color[get_burough(included_stations[i].complex_id)], label=f'{included_stations[i].__str__()}')
+            plt.text(X_iso[i, 0], X_iso[i, 1], f'{included_stations[i].__str__()}', fontsize=4, ha='right', va='bottom')
     plt.title('Isomap Subway Map')
     print("SHOW")
     plt.show()
@@ -403,8 +408,9 @@ if __name__ == '__main__':
     X_iso = isomap3.fit_transform(distances)
     plt.figure(figsize=(8, 6))
     for i in range(len(included_stations)):
-        plt.scatter(X_iso[i, 0], X_iso[i, 1], c=color[get_burough(included_stations[i].complex_id)], label=f'{included_stations[i].__str__()}')
-        plt.text(X_iso[i, 0], X_iso[i, 1], f'{included_stations[i].__str__()}', fontsize=4, ha='right', va='bottom')
+        if get_burough(included_stations[i].complex_id) == "BQ":
+            plt.scatter(X_iso[i, 0], X_iso[i, 1], c=color[get_burough(included_stations[i].complex_id)], label=f'{included_stations[i].__str__()}')
+            plt.text(X_iso[i, 0], X_iso[i, 1], f'{included_stations[i].__str__()}', fontsize=4, ha='right', va='bottom')
     plt.title('Isomap Subway Map')
     print("SHOW")
     plt.show()
@@ -414,8 +420,9 @@ if __name__ == '__main__':
     X_iso = isomap4.fit_transform(distances)
     plt.figure(figsize=(8, 6))
     for i in range(len(included_stations)):
-        plt.scatter(X_iso[i, 0], X_iso[i, 1], c=color[get_burough(included_stations[i].complex_id)], label=f'{included_stations[i].__str__()}')
-        plt.text(X_iso[i, 0], X_iso[i, 1], f'{included_stations[i].__str__()}', fontsize=4, ha='right', va='bottom')
+        if get_burough(included_stations[i].complex_id) == "BQ":
+            plt.scatter(X_iso[i, 0], X_iso[i, 1], c=color[get_burough(included_stations[i].complex_id)], label=f'{included_stations[i].__str__()}')
+            plt.text(X_iso[i, 0], X_iso[i, 1], f'{included_stations[i].__str__()}', fontsize=4, ha='right', va='bottom')
     plt.title('Isomap Subway Map')
     print("SHOW")
     plt.show()
