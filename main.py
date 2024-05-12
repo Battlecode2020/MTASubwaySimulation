@@ -1,10 +1,13 @@
 from dijkstar import Graph, find_path
 import pandas as pd
+from sklearn.cluster import SpectralClustering
+
 import stations
 import simulation
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.manifold import Isomap
+from scipy.cluster.hierarchy import linkage, dendrogram
 def find_stations(all_stations, stop, line):
     for i in range(len(all_stations)):
         if all_stations[i].name == stop and all_stations[i].line == line:
@@ -100,29 +103,31 @@ def get_burough(complex_id, filename = "Subway_stations.csv"):
 
 
 
-def get_graph():
-
-    # 1 PM
-    line_freqs = {'1': 6, '2': 8, '3': 8, '4': 8, '5': 8, '6': 4, '7': 5, 'A': 8, 'B': 10, 'C': 8, 'D': 10, 'E': 8, 'F': 7, 'G': 8, 'J': 10, 'L': 5, 'M': 10, 'N': 9, 'Q': 9, 'S': 5, 'R': 8, 'W': 10}
-    '''
-    #4 PM
-    line_freqs = {'1': 5, '2': 6, '3': 7, '4': 6, '5': 4, '6': 4, '7': 3, 'A': 6, 'B': 10, 'C': 10, 'D': 6, 'E': 5, 'F': 5, 'G': 8, 'J': 9, 'L': 4, 'M': 7, 'N': 12, 'Q': 8, 'S': 5, 'R': 7, 'W': 10}
-
-    #7 PM
-    line_freqs = {'1': 4, '2': 6, '3': 7, '4': 6, '5': 9, '6': 4, '7': 3, 'A': 8, 'B': 10, 'C': 7, 'D': 10, 'E': 5, 'F': 5, 'G': 9, 'J': 10, 'L': 4, 'M': 11, 'N': 10, 'Q': 7, 'S': 5, 'R': 11, 'W': 10}
-
-    #10 PM
-    line_freqs = {'1': 5, '2': 10, '3': 15, '4': 10, '5': 18, '6': 7, '7': 5, 'A': 10, 'B': 60, 'C': 11, 'D': 12, 'E': 10, 'F': 10, 'G': 12, 'J': 10, 'L': 6, 'M': 10, 'N': 10, 'Q': 10, 'S': 5, 'R': 12, 'W': 10}
-
-    #2 AM
-    line_freqs = {'1': 20, '2': 20, '3': 20, '4': 20, '5': 20, '6': 20, '7': 20, 'A': 20, 'B': 60, 'C': 60, 'D': 20, 'E': 20,  'F': 20, 'G': 20, 'J': 20, 'L': 20, 'M': 20, 'N': 20, 'Q': 20, 'S': 60, 'R': 20, 'W': 60}
-    
-    #10 AM
-    line_freqs = {'1': 5, '2': 8, '3': 8, '4': 7, '5': 8, '6': 4, '7': 5, 'A': 5, 'B': 10, 'C': 10, 'D': 10, 'E': 6, 'F': 6, 'G': 7, 'J': 10, 'L': 4, 'M': 10, 'N': 9, 'Q': 8, 'S': 4, 'R': 8, 'W': 10}
-    
-    #7 AM
-    line_freqs = {'1': 8, '2': 6, '3': 6, '4': 5, '5': 4, '6': 4, '7': 2, 'A': 4, 'B': 6, 'C': 10, 'D': 10, 'E': 6, 'F': 4, 'G': 7, 'J': 10, 'L': 4, 'M': 9, 'N': 10, 'Q': 7, 'S': 5, 'R': 8, 'W': 9}
-    '''
+def get_graph(runtime = "1PM"):
+    line_freqs = {}
+    if runtime == "1PM":
+        # 1 PM
+        line_freqs = {'1': 6, '2': 8, '3': 8, '4': 8, '5': 8, '6': 4, '7': 5, 'A': 8, 'B': 10, 'C': 8, 'D': 10, 'E': 8, 'F': 7, 'G': 8, 'J': 10, 'L': 5, 'M': 10, 'N': 9, 'Q': 9, 'S': 5, 'R': 8, 'W': 10}
+    elif runtime == "4PM":
+        #4 PM
+        line_freqs = {'1': 5, '2': 6, '3': 7, '4': 6, '5': 4, '6': 4, '7': 3, 'A': 6, 'B': 10, 'C': 10, 'D': 6, 'E': 5, 'F': 5, 'G': 8, 'J': 9, 'L': 4, 'M': 7, 'N': 12, 'Q': 8, 'S': 5, 'R': 7, 'W': 10}
+    elif runtime == "7PM":
+        #7 PM
+        line_freqs = {'1': 4, '2': 6, '3': 7, '4': 6, '5': 9, '6': 4, '7': 3, 'A': 8, 'B': 10, 'C': 7, 'D': 10, 'E': 5, 'F': 5, 'G': 9, 'J': 10, 'L': 4, 'M': 11, 'N': 10, 'Q': 7, 'S': 5, 'R': 11, 'W': 10}
+    elif runtime == "10PM":
+        #10 PM
+        line_freqs = {'1': 5, '2': 10, '3': 15, '4': 10, '5': 18, '6': 7, '7': 5, 'A': 10, 'B': 60, 'C': 11, 'D': 12, 'E': 10, 'F': 10, 'G': 12, 'J': 10, 'L': 6, 'M': 10, 'N': 10, 'Q': 10, 'S': 5, 'R': 12, 'W': 10}
+    elif runtime == "2AM":
+        #2 AM
+        line_freqs = {'1': 20, '2': 20, '3': 20, '4': 20, '5': 20, '6': 20, '7': 20, 'A': 20, 'B': 60, 'C': 60, 'D': 20, 'E': 20,  'F': 20, 'G': 20, 'J': 20, 'L': 20, 'M': 20, 'N': 20, 'Q': 20, 'S': 60, 'R': 20, 'W': 60}
+    elif runtime == "10AM":
+        #10 AM
+        line_freqs = {'1': 5, '2': 8, '3': 8, '4': 7, '5': 8, '6': 4, '7': 5, 'A': 5, 'B': 10, 'C': 10, 'D': 10, 'E': 6, 'F': 6, 'G': 7, 'J': 10, 'L': 4, 'M': 10, 'N': 9, 'Q': 8, 'S': 4, 'R': 8, 'W': 10}
+    else:
+        #7 AM
+        line_freqs = {'1': 8, '2': 6, '3': 6, '4': 5, '5': 4, '6': 4, '7': 2, 'A': 4, 'B': 6, 'C': 10, 'D': 10, 'E': 6, 'F': 4, 'G': 7, 'J': 10, 'L': 4, 'M': 9, 'N': 10, 'Q': 7, 'S': 5, 'R': 8, 'W': 9}
+    for key,value in line_freqs.items():
+        line_freqs[key] = value / 2
     subwayStations = create_stations("Subway_stations.csv")
     graph = Graph()
     # 1 line
@@ -317,8 +322,50 @@ def total_time(graph, all_stations, movement_matrix):
     return total
 
 def cluster():
+    colors = {}
+    colors[0] = 'r'
+    colors[1] = 'orange'
+    colors[2] = 'purple'
+    colors[3] = 'blue'
+    borough_count = {}
+    borough_count['BK'] = 0
+    borough_count['Q'] = 0
+    borough_count['M'] = 0
+    borough_count['BX'] = 0
 
-if __name__ == '__main__':
+    graph, substations = get_graph()
+
+    locs = get_complexes()
+    included_stations = []
+
+    for i in locs:
+        included_stations.append(find_stations_exact(substations, "O", i))
+    distances = np.zeros((len(included_stations),len(included_stations)))
+    for i in range(len(included_stations)):
+        for j in range(len(included_stations)):
+            distances[i][j] = find_path(graph, included_stations[i], included_stations[j], cost_func=cost_func).total_cost
+            print("{} {}".format(i, j))
+
+    spectral = SpectralClustering(n_clusters=4, affinity='precomputed', n_components=2)
+    labels = spectral.fit_predict(distances)
+
+    isomap = Isomap(n_neighbors=10, n_components=2)
+    X_iso = isomap.fit_transform(distances)
+
+
+    for i in range(len(included_stations)):
+        if labels[i] == 1:
+            print(get_burough(included_stations[i].complex_id))
+
+    for i in range(len(included_stations)):
+        plt.scatter(X_iso[i, 0], X_iso[i, 1], c=colors[labels[i]], label=f'{included_stations[i].__str__()}')
+        plt.text(X_iso[i, 0], X_iso[i, 1], f'{included_stations[i].__str__()}', fontsize=4, ha='right', va='bottom')
+    plt.title('Subway Spectral Clustering')
+    print("SHOW")
+    plt.show()
+
+
+def isomap_usage():
     color = {}
     color['A'] = 'b'
     color['B'] = 'orange'
@@ -429,3 +476,30 @@ if __name__ == '__main__':
     print(find_path(graph, find_stations_exact(substations, "O", 451), find_stations_exact(substations, "O", 362),
                     cost_func=cost_func))
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
+
+def all_transit_times():
+    graph2am, substations1 = get_graph()
+    graph7am, substations2 = get_graph("7AM")
+    graph10am, substations3 = get_graph("10AM")
+    graph1pm, substations4 = get_graph("1PM")
+    graph4pm, substations5 = get_graph("4PM")
+    graph7pm, substations6 = get_graph("7PM")
+    graph10pm, substations7 = get_graph("10PM")
+
+
+    current_time = "10/17/2023 02:00:00 AM"
+    print("{}: {}".format(current_time, total_time(graph2am, substations1, simulation.movement(current_time))))
+    current_time = "10/17/2023 07:00:00 AM"
+    print("{}: {}".format(current_time, total_time(graph7am, substations2, simulation.movement(current_time))))
+    current_time = "10/17/2023 10:00:00 AM"
+    print("{}: {}".format(current_time, total_time(graph10am, substations3, simulation.movement(current_time))))
+    current_time = "10/17/2023 01:00:00 PM"
+    print("{}: {}".format(current_time, total_time(graph1pm, substations4, simulation.movement(current_time))))
+    current_time = "10/16/2023 04:00:00 PM"
+    print("{}: {}".format(current_time, total_time(graph4pm, substations5, simulation.movement(current_time))))
+    current_time = "10/16/2023 07:00:00 PM"
+    print("{}: {}".format(current_time, total_time(graph7pm, substations6, simulation.movement(current_time))))
+    current_time = "10/16/2023 10:00:00 PM"
+    print("{}: {}".format(current_time, total_time(graph10pm, substations7, simulation.movement(current_time))))
+
+all_transit_times()
