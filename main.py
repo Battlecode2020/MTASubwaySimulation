@@ -25,11 +25,7 @@ def find_stations_of_complex(all_stations, complex):
             complex_stations.append(all_stations[i])
     return complex_stations
 
-def find_closest_station(graph, substations, station):
-    closest = None
-    min = 200
-    for i in substations:
-        if find_path(graph, i, station, cost_func=cost_func)
+
 
 
 def add_line(graph, stops, train_frequency, station_transit, all_stations ):
@@ -84,6 +80,25 @@ def get_complexes(filename="Subway_stations.csv"):
         if (row['Complex ID'] not in banned) and (row['Complex ID'] not in complex_IDs):
             complex_IDs.append(row['Complex ID'])
     return complex_IDs
+
+def find_closest_station(graph, substations, station):
+    closest = stations.Station("A", "O", 1000)
+    min = 200
+    banned = [627, 141, 626, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 444,445, 501, 502, 503, 504, 505, 506, 507, 508, 509, 510, 511, 512, 513, 514, 515, 516, 517, 518, 519, 522,523]
+    for i in substations:
+        if i.complex_id == station.complex_id :
+            if 0 < find_path(graph, station, i, cost_func=cost_func).total_cost < min:
+                min = find_path(graph, station, i, cost_func=cost_func).total_cost
+                closest = i
+    return closest
+
+def get_burough(complex_id, filename = "Subway_stations.csv"):
+    df = pd.read_csv(filename)
+    for index, row in df.iterrows():
+        if row['Complex ID'] == complex_id:
+            return ("B" + row['Borough'])
+
+
 
 def get_graph():
 
@@ -177,7 +192,7 @@ def get_graph():
     add_line(graph, A_stops, line_freqs['A'], A_times, subwayStations)
 
     # B line
-    B_stop_names = ["Bedford Park Blvd", "Kingsbridge Rd", "Fordham Rd", "182-183 Sts", "Tremont Av", "174-175 Sts", "170 St", "167 St", "161 St-Yankee Stadium", "155 St", "145 St", "135 St", "125 St", "116 St", "Cathedral Pkwy (110 St)", "103 St", "96 St", "86 St", "81 St-Museum of Natural History", "72 St", "59 St-Columbus Circle", "7 Av", "47-50 Sts-Rockefeller Ctr", "42 St-Bryant Pk", "34 St-Herald Sq", "W 4 St-Wash Sq", "Broadway-Lafayette St", "Grand St", "DeKalb Av", "Atlantic Av-Barclays Ctr", "7 Av", "Prospect Park", "Church Av", "Newkirk Plaza", "Kings Hwy", "Sheepshead Bay", "Brighton Beach" ]
+    B_stop_names = ["Bedford Park Blvd", "Kingsbridge Rd", "Fordham Rd", "182-183 Sts", "Tremont Av", "174-175 Sts", "170 St", "167 St", "161 St-Yankee Stadium", "155 St", "145 St", "135 St", "125 St", "116 St", "Cathedral Pkwy (110 St)", "103 St", "96 St", "86 St", "81 St-Museum of Natural History", "72 St", "59 St-Columbus Circle", "7 Av", "47-50 Sts-Rockefeller Ctr", "42 St-Bryant Pk", "34 St-Herald Sq", "W 4 St-Wash Sq", "Broadway-Lafayette St", "Grand St", "DeKalb Av", "Atlantic Av-Barclays Ctr", "7 Av(B)", "Prospect Park", "Church Av", "Newkirk Plaza", "Kings Hwy", "Sheepshead Bay", "Brighton Beach" ]
     B_stops = []
     for i in B_stop_names:
         B_stops.append(find_stations(subwayStations, i, "B"))
@@ -193,7 +208,7 @@ def get_graph():
     add_line(graph, C_stops, line_freqs['C'], C_times, subwayStations)
 
     # D line - TIMES WITH BROOKLYN LOCAL - CHECK
-    D_stop_names = ["Norwood-205 St", "Bedford Park Blvd", "Kingsbridge Rd", "Fordham Rd", "182-183 Sts", "Tremont Av", "174-175 Sts", "170 St", "167 St", "161 St-Yankee Stadium", "155 St", "145 St", "125 St", "59 St-Columbus Circle", "7 Av", "47-50 Sts-Rockefeller Ctr", "42 St-Bryant Pk", "34 St-Herald Sq", "W 4 St-Wash Sq", "Broadway-Lafayette St", "Grand St", "Atlantic Av-Barclays Ctr", "36 St", "9 Av", "Fort Hamilton Pkwy", "50 St", "55 St", "62 St", "71 St", "79 St", "18 Av", "20 Av", "Bay Pkwy", "25 Av", "Bay 50 St", "Coney Island-Stillwell Av"]
+    D_stop_names = ["Norwood-205 St", "Bedford Park Blvd", "Kingsbridge Rd", "Fordham Rd", "182-183 Sts", "Tremont Av", "174-175 Sts", "170 St", "167 St", "161 St-Yankee Stadium", "155 St", "145 St", "125 St", "59 St-Columbus Circle", "7 Av", "47-50 Sts-Rockefeller Ctr", "42 St-Bryant Pk", "34 St-Herald Sq", "W 4 St-Wash Sq", "Broadway-Lafayette St", "Grand St", "Atlantic Av-Barclays Ctr", "36 St(B)", "9 Av", "Fort Hamilton Pkwy", "50 St", "55 St", "62 St", "71 St", "79 St", "18 Av", "20 Av", "Bay Pkwy", "25 Av", "Bay 50 St", "Coney Island-Stillwell Av"]
     D_stops = []
     for i in D_stop_names:
         D_stops.append(find_stations(subwayStations, i, "D"))
@@ -248,7 +263,7 @@ def get_graph():
     add_line(graph, M_stops, line_freqs['M'], M_times, subwayStations)
 
     #N LINE
-    N_stop_names = ["Astoria-Ditmars Blvd", "Astoria Blvd", "30 Av", "Broadway", "36 Av", "39 Av-Dutch Kills", "Queensboro Plaza", "Lexington Av/59 St", "5 Av/59 St", "57 St-7 Av", "49 St", "Times Sq-42 St", "34 St-Herald Sq", "14 St-Union Sq", "Canal St", "Atlantic Av-Barclays Ctr", "36 St", "59 St", "8 Av", "Fort Hamilton Pkwy", "New Utrecht Av", "18 Av", "20 Av", "Bay Pkwy", "Kings Hwy", "Avenue U", "86 St", "Coney Island-Stillwell Av"]
+    N_stop_names = ["Astoria-Ditmars Blvd", "Astoria Blvd", "30 Av", "Broadway", "36 Av", "39 Av-Dutch Kills", "Queensboro Plaza", "Lexington Av/59 St", "5 Av/59 St", "57 St-7 Av", "49 St", "Times Sq-42 St", "34 St-Herald Sq", "14 St-Union Sq", "Canal St", "Atlantic Av-Barclays Ctr", "36 St(B)", "59 St", "8 Av", "Fort Hamilton Pkwy", "New Utrecht Av", "18 Av", "20 Av", "Bay Pkwy", "Kings Hwy", "Avenue U", "86 St", "Coney Island-Stillwell Av"]
     N_stops = []
     for i in N_stop_names:
         N_stops.append(find_stations(subwayStations, i, "N"))
@@ -256,7 +271,7 @@ def get_graph():
     add_line(graph, N_stops, line_freqs['N'], N_times, subwayStations)
 
     # Q line DAY ROUTE
-    Q_stop_names = ["Coney Island-Stillwell Av", "W 8 St-NY Aquarium", "Ocean Pkwy", "Brighton Beach", "Sheepshead Bay", "Neck Rd", "Avenue U", "Kings Hwy", "Avenue M", "Avenue J", "Avenue H", "Newkirk Plaza", "Cortelyou Rd", "Beverley Rd", "Church Av", "Parkside Av", "Prospect Park", "7 Av", "Atlantic Av-Barclays Ctr", "DeKalb Av", "Canal St", "14 St-Union Sq", "34 St-Herald Sq", "Times Sq-42 St", "57 St-7 Av", "Lexington Av/63 St", "72 St", "86 St", "96 St"]
+    Q_stop_names = ["Coney Island-Stillwell Av", "W 8 St-NY Aquarium", "Ocean Pkwy", "Brighton Beach", "Sheepshead Bay", "Neck Rd", "Avenue U", "Kings Hwy", "Avenue M", "Avenue J", "Avenue H", "Newkirk Plaza", "Cortelyou Rd", "Beverley Rd", "Church Av", "Parkside Av", "Prospect Park", "7 Av(B)", "Atlantic Av-Barclays Ctr", "DeKalb Av", "Canal St", "14 St-Union Sq", "34 St-Herald Sq", "Times Sq-42 St", "57 St-7 Av", "Lexington Av/63 St", "72 St", "86 St", "96 St"]
     Q_stops = []
     for i in Q_stop_names:
         Q_stops.append(find_stations(subwayStations, i, "Q"))
@@ -272,7 +287,7 @@ def get_graph():
     add_line(graph, S_stops, line_freqs['S'], S_times, subwayStations)
 
     # R line
-    R_stop_names = ["Bay Ridge-95 St", "86 St", "77 St", "Bay Ridge Av", "59 St", "53 St", "45 St", "36 St", "25 St", "Prospect Av", "4 Av-9 St", "Union St", "Atlantic Av-Barclays Ctr", "DeKalb Av", "Jay St-MetroTech", "Court St", "Whitehall St-South Ferry", "Rector St", "Cortlandt St", "City Hall", "Canal St", "Prince St", "8 St-NYU", "14 St-Union Sq", "23 St", "28 St","34 St-Herald Sq","Times Sq-42 St", "49 St", "57 St-7 Av", "5 Av/59 St", "Lexington Av/59 St", "Queens Plaza", "36 St", "Steinway St", "46 St", "Northern Blvd", "65 St", "Jackson Hts-Roosevelt Av", "Elmhurst Av", "Grand Av-Newtown", "Woodhaven Blvd", "63 Dr-Rego Park", "67 Av", "Forest Hills-71 Av"]
+    R_stop_names = ["Bay Ridge-95 St", "86 St", "77 St", "Bay Ridge Av", "59 St", "53 St", "45 St", "36 St(B)", "25 St", "Prospect Av", "4 Av-9 St", "Union St", "Atlantic Av-Barclays Ctr", "DeKalb Av", "Jay St-MetroTech", "Court St", "Whitehall St-South Ferry", "Rector St", "Cortlandt St", "City Hall", "Canal St", "Prince St", "8 St-NYU", "14 St-Union Sq", "23 St", "28 St","34 St-Herald Sq","Times Sq-42 St", "49 St", "57 St-7 Av", "5 Av/59 St", "Lexington Av/59 St", "Queens Plaza", "36 St", "Steinway St", "46 St", "Northern Blvd", "65 St", "Jackson Hts-Roosevelt Av", "Elmhurst Av", "Grand Av-Newtown", "Woodhaven Blvd", "63 Dr-Rego Park", "67 Av", "Forest Hills-71 Av"]
     R_stops = []
     for i in R_stop_names:
         R_stops.append(find_stations(subwayStations, i, "R"))
@@ -310,6 +325,7 @@ if __name__ == '__main__':
     color['F'] = 'orange'
     color['G'] = 'g'
     color['J'] = 'brown'
+    color['L'] = 'gray'
     color['M'] = 'orange'
     color['N'] = 'yellow'
     color['Q'] = 'yellow'
@@ -325,8 +341,14 @@ if __name__ == '__main__':
     color['4'] = 'g'
     color['5'] = 'g'
     color['7'] = 'purple'
+    color['BQ'] = 'purple'
+    color['BBx'] = 'orange'
+    color['BBk'] = 'blue'
+    color['BM'] = 'red'
 
     graph, substations = get_graph()
+    print(find_closest_station(graph, substations, find_stations(substations, "96 St", "O")).line)
+    print(find_closest_station(graph, substations, find_stations(substations, "96 St", "O")).name)
     '''
     current_time = "10/17/2023 01:00:00 PM"
     for i in range(3):
@@ -351,10 +373,51 @@ if __name__ == '__main__':
     X_iso = isomap.fit_transform(distances)
     # Plotting the result
     plt.figure(figsize=(8, 6))
+    '''
     for i in range(len(included_stations)):
-        plt.scatter(X_iso[i, 0], X_iso[i, 1], c=color[find_closest_station(graph, substations, included_stations[i])], label=f'{included_stations[i].__str__()}')
+        plt.scatter(X_iso[i, 0], X_iso[i, 1], c=color[find_closest_station(graph, substations, included_stations[i]).line], label=f'{included_stations[i].__str__()}')
+        plt.text(X_iso[i, 0], X_iso[i, 1], f'{included_stations[i].__str__()}', fontsize=4, ha='right', va='bottom')
+    '''
+    for i in range(len(included_stations)):
+        plt.scatter(X_iso[i, 0], X_iso[i, 1], c=color[get_burough(included_stations[i].complex_id)], label=f'{included_stations[i].__str__()}')
         plt.text(X_iso[i, 0], X_iso[i, 1], f'{included_stations[i].__str__()}', fontsize=4, ha='right', va='bottom')
     plt.title('Isomap Subway Map')
+    print("SHOW")
+    plt.show()
+
+
+
+    #print 2
+    isomap2 = Isomap(n_neighbors=30, n_components=2)
+    X_iso = isomap2.fit_transform(distances)
+    plt.figure(figsize=(8, 6))
+    for i in range(len(included_stations)):
+        plt.scatter(X_iso[i, 0], X_iso[i, 1], c=color[get_burough(included_stations[i].complex_id)], label=f'{included_stations[i].__str__()}')
+        plt.text(X_iso[i, 0], X_iso[i, 1], f'{included_stations[i].__str__()}', fontsize=4, ha='right', va='bottom')
+    plt.title('Isomap Subway Map')
+    print("SHOW")
+    plt.show()
+
+    #print 3
+    isomap3 = Isomap(n_neighbors=100, n_components=2)
+    X_iso = isomap3.fit_transform(distances)
+    plt.figure(figsize=(8, 6))
+    for i in range(len(included_stations)):
+        plt.scatter(X_iso[i, 0], X_iso[i, 1], c=color[get_burough(included_stations[i].complex_id)], label=f'{included_stations[i].__str__()}')
+        plt.text(X_iso[i, 0], X_iso[i, 1], f'{included_stations[i].__str__()}', fontsize=4, ha='right', va='bottom')
+    plt.title('Isomap Subway Map')
+    print("SHOW")
+    plt.show()
+
+    #print 4
+    isomap4 = Isomap(n_neighbors=300, n_components=2)
+    X_iso = isomap4.fit_transform(distances)
+    plt.figure(figsize=(8, 6))
+    for i in range(len(included_stations)):
+        plt.scatter(X_iso[i, 0], X_iso[i, 1], c=color[get_burough(included_stations[i].complex_id)], label=f'{included_stations[i].__str__()}')
+        plt.text(X_iso[i, 0], X_iso[i, 1], f'{included_stations[i].__str__()}', fontsize=4, ha='right', va='bottom')
+    plt.title('Isomap Subway Map')
+    print("SHOW")
     plt.show()
     print(find_path(graph, find_stations_exact(substations, "O", 451), find_stations_exact(substations, "O", 362),
                     cost_func=cost_func))
