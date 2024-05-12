@@ -1,7 +1,7 @@
 from dijkstar import Graph, find_path
 import pandas as pd
 from sklearn.cluster import SpectralClustering
-
+import dgh
 import stations
 import simulation
 import numpy as np
@@ -126,8 +126,10 @@ def get_graph(runtime = "1PM"):
     else:
         #7 AM
         line_freqs = {'1': 8, '2': 6, '3': 6, '4': 5, '5': 4, '6': 4, '7': 2, 'A': 4, 'B': 6, 'C': 10, 'D': 10, 'E': 6, 'F': 4, 'G': 7, 'J': 10, 'L': 4, 'M': 9, 'N': 10, 'Q': 7, 'S': 5, 'R': 8, 'W': 9}
+    '''
     for key,value in line_freqs.items():
         line_freqs[key] = value / 2
+    '''
     subwayStations = create_stations("Subway_stations.csv")
     graph = Graph()
     # 1 line
@@ -502,4 +504,113 @@ def all_transit_times():
     current_time = "10/16/2023 10:00:00 PM"
     print("{}: {}".format(current_time, total_time(graph10pm, substations7, simulation.movement(current_time))))
 
-all_transit_times()
+def gromov_hausdorff_analysis():
+    graph2am, substations1 = get_graph()
+    graph7am, substations2 = get_graph("7AM")
+    graph10am, substations3 = get_graph("10AM")
+    graph1pm, substations4 = get_graph("1PM")
+    graph4pm, substations5 = get_graph("4PM")
+    graph7pm, substations6 = get_graph("7PM")
+    graph10pm, substations7 = get_graph("10PM")
+
+    samples = []
+    locs = get_complexes()
+
+    included_stations1 = []
+    for i in locs:
+        included_stations1.append(find_stations_exact(substations1, "O", i))
+    distances1 = np.zeros((len(included_stations1), len(included_stations1)))
+    for i in range(len(included_stations1)):
+        for j in range(len(included_stations1)):
+            distances1[i][j] = find_path(graph2am, included_stations1[i], included_stations1[j], cost_func=cost_func).total_cost
+            print("{} {}".format(i, j))
+
+    samples.append(distances1)
+
+    included_stations2 = []
+    for i in locs:
+        included_stations2.append(find_stations_exact(substations2, "O", i))
+    distances2 = np.zeros((len(included_stations1), len(included_stations1)))
+    for i in range(len(included_stations1)):
+        for j in range(len(included_stations1)):
+            distances2[i][j] = find_path(graph7am, included_stations2[i], included_stations2[j],
+                                         cost_func=cost_func).total_cost
+            print("{} {}".format(i, j))
+
+    samples.append(distances2)
+
+    included_stations3 = []
+    for i in locs:
+        included_stations3.append(find_stations_exact(substations3, "O", i))
+    distances3 = np.zeros((len(included_stations1), len(included_stations1)))
+    for i in range(len(included_stations1)):
+        for j in range(len(included_stations1)):
+            distances3[i][j] = find_path(graph10am, included_stations3[i], included_stations3[j],
+                                         cost_func=cost_func).total_cost
+            print("{} {}".format(i, j))
+
+    samples.append(distances3)
+
+
+    included_stations4 = []
+    for i in locs:
+        included_stations4.append(find_stations_exact(substations4, "O", i))
+    distances4 = np.zeros((len(included_stations1), len(included_stations1)))
+    for i in range(len(included_stations1)):
+        for j in range(len(included_stations1)):
+            distances4[i][j] = find_path(graph1pm, included_stations4[i], included_stations4[j],
+                                         cost_func=cost_func).total_cost
+            print("{} {}".format(i, j))
+
+    samples.append(distances4)
+
+
+    included_stations5 = []
+    for i in locs:
+        included_stations5.append(find_stations_exact(substations5, "O", i))
+    distances5 = np.zeros((len(included_stations1), len(included_stations1)))
+    for i in range(len(included_stations1)):
+        for j in range(len(included_stations1)):
+            distances5[i][j] = find_path(graph4pm, included_stations5[i], included_stations5[j],
+                                         cost_func=cost_func).total_cost
+            print("{} {}".format(i, j))
+
+    samples.append(distances5)
+
+    included_stations6 = []
+    for i in locs:
+        included_stations6.append(find_stations_exact(substations6, "O", i))
+    distances6 = np.zeros((len(included_stations1), len(included_stations1)))
+    for i in range(len(included_stations1)):
+        for j in range(len(included_stations1)):
+            distances6[i][j] = find_path(graph7pm, included_stations6[i], included_stations6[j],
+                                         cost_func=cost_func).total_cost
+            print("{} {}".format(i, j))
+
+    samples.append(distances6)
+
+    included_stations7 = []
+    for i in locs:
+        included_stations7.append(find_stations_exact(substations7, "O", i))
+    distances7 = np.zeros((len(included_stations1), len(included_stations1)))
+    for i in range(len(included_stations1)):
+        for j in range(len(included_stations1)):
+            distances7[i][j] = find_path(graph10pm, included_stations7[i], included_stations7[j],
+                                         cost_func=cost_func).total_cost
+            print("{} {}".format(i, j))
+
+    samples.append(distances7)
+
+    dist = np.zeros((len(samples), len(samples)))
+    for x in range(len(samples)):
+        for y in range(len(samples)):
+            print("{} {}".format(x, y))
+            if x < y:
+                dist[x][y] = dgh.upper(samples[x], samples[y])
+            else:
+                dist[x][y] = dist[y][x]
+
+    print(dist)
+    np.savetxt('output_matrix.csv', dist, delimiter=',')
+
+gromov_hausdorff_analysis()
